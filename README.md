@@ -1,8 +1,6 @@
-# homebridge-blinds
+# homebridge-blinds-cmd-zh
 
 `homebridge-blinds` is a plugin for Homebridge.
-
-Control your `http`-based blinds via Homebridge!
 
 ## Installation
 
