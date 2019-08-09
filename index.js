@@ -1,25 +1,26 @@
 var request = require("request");
+var exec = require("child_process").exec;
 var Service, Characteristic;
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
 
-    homebridge.registerAccessory("homebridge-blinds", "BlindsHTTP", BlindsHTTPAccessory);
+    homebridge.registerAccessory("homebridge-blinds-cmd-zh", "BlindsCMDZH", BlindsCmDZHAccessory);
 }
 
-function BlindsHTTPAccessory(log, config) {
+function BlindsCmDZHAccessory(log, config) {
     // global vars
     this.log = log;
 
     // configuration vars
     this.name = config["name"];
-    this.upURL = config["up_url"];
-    this.downURL = config["down_url"];
-    this.stopURL = config["stop_url"];
-    this.stopAtBoundaries = config["trigger_stop_at_boundaries"];
-    this.httpMethod = config["http_method"] || "POST";
+    this.upURL = config["up_cmd"];
+    this.downURL = config["down_cmd"];
+    this.stopURL = config["stop_cmd"];
     this.motionTime = config["motion_time"];
+    
+    //this.stopAtBoundaries = config["trigger_stop_at_boundaries"];
 
     // state vars
     this.interval = null;
@@ -52,22 +53,22 @@ function BlindsHTTPAccessory(log, config) {
         .on('set', this.setTargetPosition.bind(this));
 }
 
-BlindsHTTPAccessory.prototype.getCurrentPosition = function(callback) {
+BlindsCmDZHAccessory.prototype.getCurrentPosition = function(callback) {
     this.log("Requested CurrentPosition: %s", this.lastPosition);
     callback(null, this.lastPosition);
 }
 
-BlindsHTTPAccessory.prototype.getPositionState = function(callback) {
+BlindsCmDZHAccessory.prototype.getPositionState = function(callback) {
     this.log("Requested PositionState: %s", this.currentPositionState);
     callback(null, this.currentPositionState);
 }
 
-BlindsHTTPAccessory.prototype.getTargetPosition = function(callback) {
+BlindsCmDZHAccessory.prototype.getTargetPosition = function(callback) {
     this.log("Requested TargetPosition: %s", this.currentTargetPosition);
     callback(null, this.currentTargetPosition);
 }
 
-BlindsHTTPAccessory.prototype.setTargetPosition = function(pos, callback) {
+BlindsCmDZHAccessory.prototype.setTargetPosition = function(pos, callback) {
     this.log("Set TargetPosition: %s", pos);
     this.currentTargetPosition = pos;
     if (this.currentTargetPosition == this.lastPosition) {
@@ -83,7 +84,7 @@ BlindsHTTPAccessory.prototype.setTargetPosition = function(pos, callback) {
     this.service
         .setCharacteristic(Characteristic.PositionState, (moveUp ? 1 : 0));
 
-    this.httpRequest((moveUp ? this.upURL : this.downURL), this.httpMethod, function() {
+    this.cmd((moveUp ? this.upURL : this.downURL), function() {
         this.log(
             "Success moving %s",
             (moveUp ? "up (to " + pos + ")" : "down (to " + pos + ")")
@@ -101,7 +102,7 @@ BlindsHTTPAccessory.prototype.setTargetPosition = function(pos, callback) {
         localThis.lastPosition += (moveUp ? 1 : -1);
         if (localThis.lastPosition == localThis.currentTargetPosition) {
             if (localThis.currentTargetPosition != 0 && localThis.currentTargetPosition != 100) {
-                localThis.httpRequest(localThis.stopURL, localThis.httpMethod, function() {
+                localThis.cmd(localThis.stopURL, function() {
                     localThis.log(
                         "Success stop moving %s",
                         (moveUp ? "up (to " + pos + ")" : "down (to " + pos + ")")
@@ -116,20 +117,27 @@ BlindsHTTPAccessory.prototype.setTargetPosition = function(pos, callback) {
             clearInterval(localThis.interval);
         }
     }, parseInt(this.motionTime) / 100);
-    if (this.stopAtBoundaries && (this.currentTargetPosition == 0 || this.currentTargetPosition == 100)) {
+    /*if (this.stopAtBoundaries && (this.currentTargetPosition == 0 || this.currentTargetPosition == 100)) {
         this.timeout = setTimeout(function() {
-            localThis.httpRequest(localThis.stopURL, localThis.httpMethod, function() {
+            localThis.cmd(localThis.stopURL, function() {
                 localThis.log(
                     "Success stop adjusting moving %s",
                     (moveUp ? "up (to " + pos + ")" : "down (to " + pos + ")")
                 );
             }.bind(localThis));
         }, parseInt(this.motionTime));
-    }
+    }*/
     callback(null);
 }
 
-BlindsHTTPAccessory.prototype.httpRequest = function(url, method, callback) {
+BlindsCmDZHAccessory.prototype.cmd = function(url, callback) {
+  exec(cmd, function(error) {
+    callback(error)
+  });
+}
+
+/*
+BlindsCmDZHAccessory.prototype.cmd = function(url, callback) {
     request({
         method: method,
         url: url,
@@ -147,6 +155,18 @@ BlindsHTTPAccessory.prototype.httpRequest = function(url, method, callback) {
     }.bind(this));
 }
 
-BlindsHTTPAccessory.prototype.getServices = function() {
+
+BlindsCmDZHAccessory.prototype.cmd = function(moveUp, cmd, callback) {
+  this.currentPositionState = (moveUp ? Characteristic.PositionState.INCREASING : Characteristic.PositionState.DECREASING);
+  this.service
+    .setCharacteristic(Characteristic.PositionState, (moveUp ? Characteristic.PositionState.INCREASING : Characteristic.PositionState.DECREASING));
+
+  exec(cmd, function(error, stdout, stderr) {
+    callback(error, stdout, stderr)
+  });
+}*/
+
+
+BlindsCmDZHAccessory.prototype.getServices = function() {
     return [this.service];
 }

@@ -1,6 +1,6 @@
 {
-  "name": "homebridge-blinds",
-  "version": "1.1.0",
+  "name": "homebridge-blinds-cmd-zh",
+  "version": "1.0",
   "description": "A homebridge plugin to control my blinds",
   "main": "index.js",
   "scripts": {
@@ -16,9 +16,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zwerch/homebridge-blinds.git"
+    "url": "git+https://github.com/zoltanhosszu/homebridge-blinds.git"
   },
-  "author": "Robin Temme <zwerch1337@googlemail.com>",
+  "author": "Zoltan Hosszu <hello@zoltan.co>",
   "license": "ISC",
   "dependencies": {
     "request": "^2.74.0"
