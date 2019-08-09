@@ -15,7 +15,7 @@ sudo npm install -g homebridge
 ```
 Install homebridge-blinds:
 ```sh
-sudo npm install -g homebridge-blinds
+sudo npm install -g homebridge-blinds-cmd-zh
 ```
 
 ## Configuration
@@ -24,23 +24,14 @@ Add the accessory in `config.json` in your home directory inside `.homebridge`.
 
 ```js
     {
-      "accessory": "BlindsHTTP",
+      "accessory": "BlindsCMDZH",
       "name": "Window",
-      "up_url": "http://1.2.3.4/window/up",
-      "down_url": "http://1.2.3.4/window/down",
-      "stop_url": "http://1.2.3.4/window/stop",
+      "up_cmd": "./up.sh",
+      "down_cmd": "./down.sh",
+      "stop_cmd": "./stop.sh",
       "motion_time": "<time your blind needs to move from up to down (in milliseconds)>",
-      "http_method": "PUT",
-      "trigger_stop_at_boundaries": false
     }
 ```
 
-You can omit `http_method`, it defaults to `POST`.
-
-`trigger_stop_at_boundaries` allows you to choose if a stop command should be fired or not when moving the blinds to position 0 or 100.  Most blinds dont require this command and will stop by themself, for such blinds it is advised to set this to `false`.
-
-## Note
-Currently the plugin only emulates the position (it saves it in a variable), because my blinds only support
-up and down via urls.
 
 Feel free to contribute to make this a better plugin!
