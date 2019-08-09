@@ -27,7 +27,7 @@ Add the accessory in `config.json` in your home directory inside `.homebridge`.
       "up_cmd": "./up.sh",
       "down_cmd": "./down.sh",
       "stop_cmd": "./stop.sh",
-      "motion_time": "<time your blind needs to move from up to down (in milliseconds)>",
+      "motion_time": "<time your blind needs to move from up to down (in milliseconds)>"
     }
 ```
 
