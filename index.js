@@ -131,7 +131,7 @@ BlindsCmDZHAccessory.prototype.setTargetPosition = function(pos, callback) {
 }
 
 BlindsCmDZHAccessory.prototype.cmd = function(comm, callback) {
-  exec(comm, functiyon(error) {
+  exec(comm, function(error) {
     callback(error)
   });
 }
