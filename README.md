@@ -1,6 +1,6 @@
 # homebridge-blinds-cmd-zh
 
-`homebridge-blinds` is a plugin for Homebridge.
+`homebridge-blinds-cmd-zh` is a plugin for Homebridge that enables blinds controls via shell scripts. It is based on the [homebridge-blinds](https://www.npmjs.com/package/homebridge-blinds) plugin.
 
 ## Installation
 
@@ -11,7 +11,7 @@ Install homebridge:
 ```sh
 sudo npm install -g homebridge
 ```
-Install homebridge-blinds:
+Install homebridge-blinds-cmd-zh:
 ```sh
 sudo npm install -g homebridge-blinds-cmd-zh
 ```
